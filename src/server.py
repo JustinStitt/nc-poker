@@ -1,9 +1,14 @@
+import os
 import socket
 import threading
+
+from dotenv import load_dotenv
+
 from stypes import Address
 
-HOST = "127.0.0.1"
-PORT = 1234
+load_dotenv()
+HOST = os.getenv("HOST", "0.0.0.0")
+PORT = int(os.getenv("PORT", "1234"))
 
 clients: dict[Address, socket.socket] = {}
 
@@ -30,11 +35,6 @@ def handle_client(conn: socket.socket, addr: Address) -> None:
         conn.sendall(b"You said: " + data + b"\n")
         # response = process_data(data)
 
-        # send the response to all clients except the sender
-        # for client_addr, client_conn in clients.items():
-        #     if client_addr != addr:
-        #         client_conn.sendall(response)
-
     print(f"❌ DISCONNECTED {clients[addr]}")
     del clients[addr]
     conn.close()
@@ -51,7 +51,7 @@ def setup_server(*, host: str, port: int) -> socket.socket:
     return server
 
 
-def kill_server_and_connections(server: socket.socket):
+def kill_server_and_connections(server: socket.socket) -> None:
     print("☠ Killing Server...")
     print("🤼 Disconnecting Clients" if len(clients.keys()) else "")
     for _, client_socket in clients.items():
@@ -61,8 +61,7 @@ def kill_server_and_connections(server: socket.socket):
     server.close()
 
 
-# wait for clients to connect
-def serve_forever(server: socket.socket):
+def serve_forever(server: socket.socket) -> None:
     while True:
         try:
             conn, addr = server.accept()
