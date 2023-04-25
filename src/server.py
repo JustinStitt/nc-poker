@@ -9,6 +9,7 @@ from stypes import Address
 load_dotenv()
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", "1234"))
+DRAW: dict[str, bytes] = {"clear": b"\x1b[2J\x1b[H"}
 
 clients: dict[Address, socket.socket] = {}
 
@@ -18,11 +19,11 @@ def process_data(data) -> None:
 
 
 def handle_client(conn: socket.socket, addr: Address) -> None:
-    # add the connection to the clients dictionary
     clients[addr] = conn
     print(f"✔ CONNECTED: {conn=}, {addr=}")
 
     # send a welcome message to the client
+    conn.sendall(DRAW["clear"])
     conn.sendall(
         b"Welcome to the poker game!" + bytes(str(addr), encoding="utf-8") + b"\n"
     )
