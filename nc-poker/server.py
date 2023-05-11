@@ -4,7 +4,7 @@ import threading
 
 from dotenv import load_dotenv
 
-from stypes import Address
+from .types import Address
 
 load_dotenv()
 HOST = os.getenv("HOST", "0.0.0.0")
@@ -22,6 +22,9 @@ def handle_client(conn: socket.socket, addr: Address) -> None:
     clients[addr] = conn
     print(f"✔ CONNECTED: {conn=}, {addr=}")
 
+    welcome_message = (
+        f"b'Welcome to Netcat Poker. Lobby #1 ({len(clients.keys())} / 6)'"
+    )
     # send a welcome message to the client
     conn.sendall(DRAW["clear"])
     conn.sendall(
@@ -74,6 +77,10 @@ def serve_forever(server: socket.socket) -> None:
             exit(0)  # gracefully kill interpreter
 
 
-if __name__ == "__main__":
+def main():
     server = setup_server(host=HOST, port=PORT)
     serve_forever(server)
+
+
+if __name__ == "__main__":
+    main()
