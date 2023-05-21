@@ -1,5 +1,5 @@
 # nc-poker
-### Poker on the command line using the netcat utility
+### Poker on the command line
 
 
 ### Setup
