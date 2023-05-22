@@ -9,6 +9,7 @@ s.connect((HOST, PORT))
 
 # TODO: crypto
 
+
 while True:
     socket_list = [sys.stdin, s]
 
@@ -24,7 +25,9 @@ while True:
                 s.close()
                 exit(0)
             else:
-                sys.stdout.write(data.decode())
+                # sys.stdout.write(data.decode())
+                data = data.decode()
+                print(data, flush=True, end="")
 
         # user entered a message
         else:
